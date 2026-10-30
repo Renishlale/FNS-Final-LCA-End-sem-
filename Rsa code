@@ -1,0 +1,43 @@
+import math
+
+def gen_keys(p, q):
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    e = 3
+
+    while math.gcd(e, phi) != 1:
+        e += 2
+
+    d = pow(e, -1, phi)
+    return (e, n), (d, n)
+
+def encrypt(msg, pub):
+    e, n = pub
+    ct = pow(msg, e, n)
+    return ct
+
+def decrypt(ct, prv):
+    d, n = prv
+    dec_msg = pow(ct, d, n)
+    return dec_msg
+
+if __name__ == "__main__":
+    p = 61
+    q = 53
+
+    pub, prv = gen_keys(p, q)
+
+    print(f"Public key (e, n): {pub}")
+    print(f"Private key (d, n): {prv}")
+
+    msg = 65
+    print(f"Original message: {msg}")
+
+    c = encrypt(msg, pub)
+    print(f"Encrypted ciphertext: {c}")
+
+    m = decrypt(c, prv)
+    print(f"Decrypted message: {m}")
+
+    assert msg == m
+    print("\nVerification Success!")
